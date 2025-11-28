@@ -3,184 +3,111 @@
 
 void visualizeResults(BenchmarkData *data)
 {
-  // Reduce Raylib console output: show warnings/errors only (hide INFO)
+  // set window settings
   SetTraceLogLevel(LOG_WARNING);
-
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tower of Hanoi - Results Visualization");
   SetTargetFPS(60);
-  int tableStart = 0; // start index for visible rows (scroll)
 
-  // Try to load Roboto Regular and Roboto Bold from the local `font/` folder.
-  // Fall back to Raylib's default font when a file is missing.
-  Font regularFont = {0};
-  Font boldFont = {0};
-  bool regularLoaded = false;
-  bool boldLoaded = false;
-  bool regularLoadedFromDisk = false;
-  bool boldLoadedFromDisk = false;
+  // load fonts
+  Font regularFont = FileExists("assets/Roboto-Regular.ttf") ? LoadFontEx("assets/Roboto-Regular.ttf", 32, 0, 0) : GetFontDefault();
+  Font boldFont = FileExists("assets/Roboto-Bold.ttf") ? LoadFontEx("assets/Roboto-Bold.ttf", 32, 0, 0) : regularFont;
 
-  const char *regularPath = "assets/Roboto-Regular.ttf";
-  const char *boldPath = "assets/Roboto-Bold.ttf";
+  // these are used to unload the fonts(free the memory)
+  bool shouldUnloadRegular = (regularFont.texture.id != GetFontDefault().texture.id);
+  bool shouldUnloadBold = (boldFont.texture.id != regularFont.texture.id) && (boldFont.texture.id != GetFontDefault().texture.id);
 
-  if (FileExists(regularPath))
-  {
-    regularFont = LoadFontEx(regularPath, 32, 0, 0);
-    if (regularFont.texture.id != 0)
-    {
-      regularLoaded = true;
-      regularLoadedFromDisk = true;
-      SetTextureFilter(regularFont.texture, TEXTURE_FILTER_BILINEAR);
-    }
-  }
+  // index where table start
+  int tableStart = 0;
 
-  if (FileExists(boldPath))
-  {
-    boldFont = LoadFontEx(boldPath, 32, 0, 0);
-    if (boldFont.texture.id != 0)
-    {
-      boldLoaded = true;
-      boldLoadedFromDisk = true;
-      SetTextureFilter(boldFont.texture, TEXTURE_FILTER_BILINEAR);
-    }
-  }
-
-  if (!regularLoaded)
-  {
-    regularFont = GetFontDefault();
-    regularLoaded = true;
+  // add textures to fonts so they don't look pixelated
+  if (regularFont.texture.id != 0)
     SetTextureFilter(regularFont.texture, TEXTURE_FILTER_BILINEAR);
-  }
+  if (boldFont.texture.id != 0 && boldFont.texture.id != regularFont.texture.id)
+    SetTextureFilter(boldFont.texture, TEXTURE_FILTER_BILINEAR);
 
-  if (!boldLoaded)
-  {
-    // Use the regular/default font as a fallback for bold text
-    boldFont = regularFont;
-    boldLoaded = false;
-  }
-
+  // screen loop
   while (!WindowShouldClose())
   {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    // Title (bold) and method (bold)
+    // title and method
     DrawTextEx(boldFont, "TOWER OF HANOI - BENCHMARK RESULTS", (Vector2){20, 20}, 24, 1, DARKBLUE);
     char methodText[50];
     sprintf(methodText, "Method: %s", data->method);
     DrawTextEx(boldFont, methodText, (Vector2){20, 50}, 20, 1, DARKGRAY);
 
-    // Define areas
+    // define areas
     Rectangle tableArea = {20, 90, 350, SCREEN_HEIGHT - 110};
     Rectangle graphArea = {390, 90, SCREEN_WIDTH - 410, SCREEN_HEIGHT - 110};
 
-    // Handle table scrolling (mouse wheel / keys)
-    // compute visible rows to clamp scrolling
-    int rowHeight_local = 25;
-    int headerY_local = tableArea.y + 45;
-    int rowsAreaY = headerY_local + 35;
-    int rowsAreaHeight = (int)(tableArea.y + tableArea.height - rowsAreaY - 10);
-    if (rowsAreaHeight < rowHeight_local)
-      rowsAreaHeight = rowHeight_local;
-    int maxRows_local = rowsAreaHeight / rowHeight_local;
+    // Calculate visible rows
+    int rowHeight = 25;
+    int availableHeight = (int)tableArea.height - 80;
+    int maxVisibleRows = availableHeight / rowHeight;
+    int maxScroll = (data->count > maxVisibleRows) ? data->count - maxVisibleRows : 0;
 
-    float wheel = GetMouseWheelMove();
-    if (wheel != 0)
-      tableStart -= (int)wheel; // wheel >0 scroll up -> move view up
+    // handle scrolling
+    tableStart -= (int)GetMouseWheelMove();
     if (IsKeyPressed(KEY_DOWN))
       tableStart++;
     if (IsKeyPressed(KEY_UP))
       tableStart--;
     if (IsKeyPressed(KEY_PAGE_DOWN))
-      tableStart += maxRows_local;
+      tableStart += maxVisibleRows;
     if (IsKeyPressed(KEY_PAGE_UP))
-      tableStart -= maxRows_local;
+      tableStart -= maxVisibleRows;
 
+    // define scrolling bandwidth
     if (tableStart < 0)
       tableStart = 0;
-    if (tableStart > data->count - maxRows_local)
-      tableStart = (data->count - maxRows_local) > 0 ? data->count - maxRows_local : 0;
+    if (tableStart > maxScroll)
+      tableStart = maxScroll;
 
-    // Draw table/graph using the loaded fonts (regular + bold)
+    // draw table and graph
     drawTable(data, tableArea, regularFont, boldFont, tableStart);
     drawGraph(data, graphArea, regularFont, boldFont);
 
-    // Draw scrollbar for table
-    if (data->count > 0)
+    // draw scrollbar if the rows exceeded the visible rows
+    if (data->count > maxVisibleRows)
     {
-      // track area (inside tableArea, right side)
       float trackX = tableArea.x + tableArea.width - 12;
-      float trackY = rowsAreaY - 5;
+      float trackY = tableArea.y + 80;
       float trackW = 8;
-      float trackH = rowsAreaHeight + 10;
+      float trackH = availableHeight;
 
-      // draw track
-      DrawRectangle(trackX, trackY, trackW, trackH, (Color){230, 230, 230, 255});
-      DrawRectangleLines((int)trackX, (int)trackY, (int)trackW, (int)trackH, (Color){200, 200, 200, 255});
+      // static scrollbar
+      DrawRectangle(trackX, trackY, trackW, trackH, LIGHTGRAY);
 
-      // compute thumb size/position
-      if (data->count <= maxRows_local)
-      {
-        // all rows visible -> thumb full
-        DrawRectangle(trackX + 1, trackY + 1, trackW - 2, trackH - 2, (Color){180, 180, 180, 255});
-      }
-      else
-      {
-        float visibleRatio = (float)maxRows_local / (float)data->count;
-        float thumbH = visibleRatio * trackH;
-        if (thumbH < 12)
-          thumbH = 12; // minimum thumb size
+      // moving scrollbar
+      float visibleRatio = (float)maxVisibleRows / (float)data->count;
+      float thumbHeight = visibleRatio * trackH;
+      if (thumbHeight < 20)
+        thumbHeight = 20;
 
-        int maxScroll = data->count - maxRows_local;
-        float scrollRatio = (maxScroll > 0) ? (float)tableStart / (float)maxScroll : 0.0f;
-        if (scrollRatio < 0)
-          scrollRatio = 0;
-        if (scrollRatio > 1)
-          scrollRatio = 1;
+      float scrollRatio = (float)tableStart / maxScroll;
+      float thumbY = trackY + (trackH - thumbHeight) * scrollRatio;
 
-        float thumbY = trackY + (trackH - thumbH) * scrollRatio;
-
-        // draw thumb
-        DrawRectangle(trackX + 1, thumbY, trackW - 2, thumbH, (Color){160, 160, 160, 255});
-        DrawRectangleLines((int)(trackX + 1), (int)thumbY, (int)(trackW - 2), (int)thumbH, (Color){120, 120, 120, 255});
-      }
+      DrawRectangle(trackX + 1, thumbY, trackW - 2, thumbHeight, BLACK);
     }
 
-    // Instructions (top-right) using Roboto regular (fallback to default)
-    {
-      const char *escText = "Press ESC to close";
-      float escFontSize = 16.0f;
-      float escSpacing = 1.0f;
-      Vector2 escSize = MeasureTextEx(regularFont, escText, escFontSize, escSpacing);
-      float escX = SCREEN_WIDTH - escSize.x - 20.0f; // 20 px margin from right
-      float escY = 12.0f;                            // near top
-      DrawTextEx(regularFont, escText, (Vector2){escX, escY}, escFontSize, escSpacing, GRAY);
-    }
+    // ability to close window with esc
+    const char *escText = "Press ESC to close";
+    Vector2 escSize = MeasureTextEx(regularFont, escText, 16.0f, 1.0f);
+    DrawTextEx(regularFont, escText, (Vector2){SCREEN_WIDTH - escSize.x - 20, 12}, 16.0f, 1.0f, GRAY);
 
     EndDrawing();
   }
 
-  if (regularLoadedFromDisk)
-  {
+  // unload fonts
+  if (shouldUnloadRegular)
     UnloadFont(regularFont);
-  }
-  if (boldLoadedFromDisk)
-  {
-    // Only unload bold separately if it was loaded from disk (not the same texture)
+  if (shouldUnloadBold)
     UnloadFont(boldFont);
-  }
 
   CloseWindow();
 }
 
-/**
- * Draws a scrollable table displaying benchmark results
- *
- * @param data - Benchmark data to display
- * @param area - Rectangle defining the table's position and size
- * @param regularFont - Font for regular text (pass {0} or default font to use Raylib's default)
- * @param boldFont - Font for headers and titles (pass {0} or default font to use Raylib's default)
- * @param startIndex - Index of first result to display (for scrolling)
- */
 void drawTable(BenchmarkData *data, Rectangle area, Font regularFont, Font boldFont, int startIndex)
 {
   // Check if custom fonts are loaded (a loaded font has a non-zero baseSize)
@@ -273,14 +200,6 @@ void drawTable(BenchmarkData *data, Rectangle area, Font regularFont, Font boldF
   EndScissorMode();
 }
 
-/**
- * Draws a graph showing execution time vs number of disks
- *
- * @param data - Benchmark data to plot
- * @param area - Rectangle defining the graph's position and size
- * @param regularFont - Font for numeric labels (pass {0} to use Raylib's default)
- * @param boldFont - Font for titles and axis labels (pass {0} to use Raylib's default)
- */
 void drawGraph(BenchmarkData *data, Rectangle area, Font regularFont, Font boldFont)
 {
   // Check if custom fonts are loaded (a loaded font has a non-zero baseSize)

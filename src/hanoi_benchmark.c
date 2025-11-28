@@ -143,7 +143,7 @@ void runBenchmarkSuite()
   {
     Node *A = NULL, *B = NULL, *C = NULL;
 
-    // Initialize peg A
+    // initialize stack A
     for (int i = n; i >= 1; i--)
       push(&A, i);
 
@@ -171,7 +171,7 @@ void runBenchmarkSuite()
 
     printf("%-8d %-15ld %-15.6f\n", n, moves, elapsed);
 
-    // Free memory
+    // free memory
     while (A)
       pop(&A);
     while (B)

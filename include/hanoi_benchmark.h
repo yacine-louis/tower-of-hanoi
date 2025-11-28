@@ -23,6 +23,7 @@ typedef struct
 } BenchmarkData;
 
 // benchmark execution functions
+
 void runSingleTest();
 void runBenchmarkSuite();
 
