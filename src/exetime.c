@@ -14,7 +14,7 @@ void endTimer(Timer *t)
 }
 
 // function to calculate elapsed time in seconds
-void getElapsedTime(Timer *t)
+double getElapsedTime(Timer *t)
 {
   return ((double)(t->end - t->start)) / CLOCKS_PER_SEC;
 }

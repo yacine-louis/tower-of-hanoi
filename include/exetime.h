@@ -14,8 +14,9 @@ typedef struct
 } Timer;
 
 // functions prototype
+
 void startTimer(Timer *t);
 void endTimer(Timer *t);
-void printTimer(Timer *t);
+double getElapsedTime(Timer *t);
 
 #endif
