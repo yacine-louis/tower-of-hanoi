@@ -1,9 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <stdlib.h>
-#include <stdio.h>
-
 /**
  * The `Node` struct represent a node in a linked-list
  */

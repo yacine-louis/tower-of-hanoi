@@ -3,6 +3,11 @@
     "exetime.h": "c",
     "stack.h": "c",
     "stdio.h": "c",
-    "hanoi.h": "c"
+    "hanoi.h": "c",
+    "raylib.h": "c",
+    "hanoi_benchmark.h": "c",
+    "string.h": "c",
+    "hanoi_visualizer.h": "c",
+    "stdlib.h": "c"
   }
 }
