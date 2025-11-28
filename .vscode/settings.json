@@ -1,5 +1,7 @@
 {
   "files.associations": {
-    "exetime.h": "c"
+    "exetime.h": "c",
+    "stack.h": "c",
+    "stdio.h": "c"
   }
 }

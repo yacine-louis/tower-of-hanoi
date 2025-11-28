@@ -15,8 +15,13 @@ typedef struct
 
 // functions prototype
 
+// initialize start time
 void startTimer(Timer *t);
+
+// initialize end time
 void endTimer(Timer *t);
+
+// calculate elapsed time in seconds
 double getElapsedTime(Timer *t);
 
 #endif
