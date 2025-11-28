@@ -78,6 +78,7 @@ void visualizeResults(BenchmarkData *data)
 
       // static scrollbar
       DrawRectangle(trackX, trackY, trackW, trackH, LIGHTGRAY);
+      DrawRectangleLines(trackX, trackY, trackW, trackH, LIGHTGRAY);
 
       // moving scrollbar
       float visibleRatio = (float)maxVisibleRows / (float)data->count;
