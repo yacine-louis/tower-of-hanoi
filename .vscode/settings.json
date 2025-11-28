@@ -2,6 +2,7 @@
   "files.associations": {
     "exetime.h": "c",
     "stack.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "hanoi.h": "c"
   }
 }
