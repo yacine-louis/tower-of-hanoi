@@ -10,7 +10,7 @@ void runSingleTest()
 {
   int n, method;
 
-  printf("\n--- SINGLE TEST MODE ---\n\n");
+  printf("----- Single Test -----\n");
   printf("Enter number of disks (1-%d): ", MAX_DISKS);
   scanf("%d", &n);
 
@@ -21,8 +21,8 @@ void runSingleTest()
   }
 
   printf("\nSelect method:\n");
-  printf("  1. Recursive\n");
-  printf("  2. Iterative\n");
+  printf(" 1. Recursive\n");
+  printf(" 2. Iterative\n");
   printf("Choice: ");
   scanf("%d", &method);
 
@@ -32,51 +32,64 @@ void runSingleTest()
     return;
   }
 
-  Node *A = NULL, *B = NULL, *C = NULL;
+  Stack *A = createStack();
+  Stack *B = createStack();
+  Stack *C = createStack();
 
-  // Initialize peg A
+  if (!A || !B || !C)
+  {
+    printf("Failed to create stacks.\n");
+    freeStack(A);
+    freeStack(B);
+    freeStack(C);
+    return;
+  }
+
+  // init peg A
   for (int i = n; i >= 1; i--)
-    push(&A, i);
+    push(A, i);
 
-  printf("\n--- Initial Configuration ---\n");
+  printf("\n--- Initial state ---\n");
   printf("Peg A: ");
-  printStack(&A);
+  printStack(A);
   printf("Peg B: ");
-  printStack(&B);
+  printStack(B);
   printf("Peg C: ");
-  printStack(&C);
+  printStack(C);
 
   Timer t;
   startTimer(&t);
 
   if (method == 1)
   {
-    printf("\n--- Running RECURSIVE method ---\n");
-    hanoiRecursive(n, &A, &C, &B);
+    printf("\n--- Running Recursive method ---\n");
+    hanoiRecursive(n, A, C, B);
   }
   else
   {
-    printf("\n--- Running ITERATIVE method ---\n");
-    hanoiIterative(n, &A, &B, &C);
+    printf("\n--- Running Iterative method ---\n");
+    hanoiIterative(n, A, B, C);
   }
 
   endTimer(&t);
 
-  printf("\n--- Final Configuration ---\n");
+  printf("\n--- Final state ---\n");
   printf("Peg A: ");
-  printStack(&A);
+  printStack(A);
   printf("Peg B: ");
-  printStack(&B);
+  printStack(B);
   printf("Peg C: ");
-  printStack(&C);
+  printStack(C);
 
-  long expected_moves = (1 << n) - 1; // 2^n - 1
+  // free stack memory
+  freeStack(A);
+  freeStack(B);
+  freeStack(C);
 
   printf("\n--- Results ---\n");
   printf("Number of disks: %d\n", n);
-  printf("Moves: %ld\n", expected_moves);
   printf("Method: %s\n", method == 1 ? "Recursive" : "Iterative");
-  printf("Execution time: %f", getElapsedTime(&t));
+  printf("Execution time: %f (sec)", getElapsedTime(&t));
 
   printf("\nPress Enter to continue...");
   getchar();
@@ -87,11 +100,11 @@ void runBenchmarkSuite()
 {
   int method, start_n, end_n;
 
-  printf("\n--- BENCHMARK SUITE MODE ---\n\n");
+  printf("\n--- Range Test ---\n\n");
 
   printf("Select method:\n");
-  printf("  1. Recursive\n");
-  printf("  2. Iterative\n");
+  printf(" 1. Recursive\n");
+  printf(" 2. Iterative\n");
   printf("Choice: ");
   scanf("%d", &method);
 

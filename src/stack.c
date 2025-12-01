@@ -17,92 +17,108 @@ Node *createNode(int data)
   return newNode;
 }
 
-int insertBeforeHead(Node **head, int data)
+Stack *createStack()
 {
-  // create/initialize new node
+  // allocate space for stack
+  Stack *stack = (Stack *)malloc(sizeof(Stack));
+
+  // check if allocation failed
+  if (stack == NULL)
+    return NULL;
+
+  // init new stack
+  stack->pTop = NULL;
+  return stack;
+}
+
+int isEmpty(Stack *stack)
+{
+  // we must check that src != NULL first because *(NULL) will result in a bad pointer
+  return stack == NULL || stack->pTop == NULL;
+}
+
+int push(Stack *stack, int data)
+{
+  // ensure that stack is initialized
+  if (stack == NULL)
+    return -1;
+
+  // create and initialize new node
   Node *newNode = createNode(data);
   if (!newNode)
     return -1;
 
-  // if linked list is empty
-  if (*head == NULL)
-  {
-    // attach node to the head
-    *head = newNode;
-    return 0;
-  }
-
   // attach node to the head of linked-list
-  newNode->next = *head;
-  *head = newNode;
+  newNode->next = stack->pTop;
+  stack->pTop = newNode;
   return 0;
 }
 
-int deleteHead(Node **head)
+int pop(Stack *stack)
 {
+  // ensure that the stack is not empty
+  if (isEmpty(stack))
+    return -1;
+
+  // remove the node at the head of linked-list
+  int topData = stack->pTop->data;
+
   // point to the head of linked-list
-  Node *temp = *head;
-  *head = (*head)->next;
+  Node *temp = stack->pTop;
+  stack->pTop = stack->pTop->next;
 
   // free memory
   free(temp);
-  return 0;
-}
-
-int isEmpty(Node **stack)
-{
-  // check the head of linked-list
-  return *stack == NULL;
-}
-
-int push(Node **stack, int data)
-{
-  // insert the node at the head of the linked list
-  if (insertBeforeHead(stack, data))
-  {
-    printf("Stack Overflow!\n");
-    return -1;
-  }
-  return 0;
-}
-
-int pop(Node **stack)
-{
-  // check if stack is empty
-  if (isEmpty(stack))
-  {
-    printf("Stack Underflow\n");
-    return -1;
-  }
-
-  // remove the node at the head of linked-list
-  int topData = (*stack)->data;
-  deleteHead(stack);
   return topData;
 }
 
-int peek(Node **stack)
+int peek(Stack *stack)
 {
   // ensure the stack is not empty
-  if (!isEmpty(stack))
-    // return data stored in the top node
-    return (*stack)->data;
-  else
+  if (isEmpty(stack))
     return -1;
+
+  return stack->pTop->data;
 }
 
-void printStack(Node **stack)
+void freeStack(Stack *stack)
 {
-  Node *temp = *stack;
+  // make sure that the stack has been initialized
+  if (stack == NULL)
+    return;
+
+  // empty the stack after finishing
+  Node *current = stack->pTop;
+  while (current != NULL)
+  {
+    Node *next = current->next;
+    free(current);
+    current = next;
+  }
+
+  // free stack structure
+  free(stack);
+}
+
+void printStack(Stack *stack)
+{
+  // assure the stack is not empty
+  if (isEmpty(stack))
+  {
+    printf("\n");
+    return;
+  }
+
+  Node *temp = stack->pTop;
   // loop through the linked-list
   while (temp != NULL)
   {
     printf("%d", temp->data);
+
+    // we don't print (->) in last element
     if (temp->next)
-    {
-      // we don't print (->) in last element
-      printf("-> ");
-    }
+      printf(" -> ");
+
     temp = temp->next;
   }
   printf("\n");

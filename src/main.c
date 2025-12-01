@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "hanoi_cli.h"
 #include "hanoi_benchmark.h"
 
 int main()
@@ -8,14 +7,20 @@ int main()
 
   while (1)
   {
-
-    printMenu();
+    printf("------------------------------\n");
+    printf("-       Tower Of Hanoi       -\n");
+    printf("------------------------------\n");
+    printf(" 1. Run single test\n");
+    printf(" 2. Run range test (visualize Graph)\n");
+    printf(" 3. Exit program\n");
+    printf("\n Enter your choice: ");
 
     if (scanf("%d", &choice) != 1)
     {
+      // not an integer, clear the keyboard buffer
       while (getchar() != '\n')
-        ; // Clear input buffer
-      printf("Invalid input! Please enter a number.\n");
+        ;
+      printf("Invalid input! enter a number.\n");
       continue;
     }
 
@@ -28,10 +33,10 @@ int main()
       runBenchmarkSuite();
       break;
     case 3:
-      printf("\nExiting...\n");
+      printf("\nExiting program...\n");
       return 0;
     default:
-      printf("Invalid choice! Please try again.\n");
+      printf("Invalid choice! try again.\n");
       printf("Press Enter to continue...");
       getchar();
       getchar();

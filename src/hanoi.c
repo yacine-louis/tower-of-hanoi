@@ -1,28 +1,30 @@
 #include "stack.h"
 #include "hanoi.h"
 
-void moveRecursive(Node **src, Node **dest)
-{
-  // get the the disk from the source stack
-  int disk = pop(src);
-  if (disk == -1)
-    return; // nothing to move
+#include <stdio.h>
 
-  // push the disk to destination stack
+void moveRecursive(Stack *src, Stack *dest)
+{
+  // assure the source stack is not empty
+  if (isEmpty(src))
+    return;
+
+  // move disk from source to destination
+  int disk = pop(src);
   push(dest, disk);
 }
 
-void hanoiRecursive(int n, Node **A, Node **C, Node **B)
+void hanoiRecursive(int n, Stack *A, Stack *C, Stack *B)
 {
   if (n == 0)
     return;
 
-  hanoiRecursive(n - 1, A, B, C); // Move n-1 disks from A to B
-  moveRecursive(A, C);            // Move nth disk from A to C
-  hanoiRecursive(n - 1, B, C, A); // Move n-1 disks from B to C
+  hanoiRecursive(n - 1, A, B, C); // move n-1 disks from A to B
+  moveRecursive(A, C);            // move nth disk from A to C
+  hanoiRecursive(n - 1, B, C, A); // move n-1 disks from B to C
 }
 
-void moveIterative(Node **src, Node **dest)
+void moveIterative(Stack *src, Stack *dest)
 {
   // check the value on the top of the stack of source and destination
   int srcTop = peek(src);
@@ -54,18 +56,23 @@ void moveIterative(Node **src, Node **dest)
   }
 }
 
-void hanoiIterative(int n, Node **A, Node **B, Node **C)
+void hanoiIterative(int n, Stack *A, Stack *B, Stack *C)
 {
+  //  for n disks, there are 2^n - 1 total moves
+  //  - odd n: (A->C, A->B, B->C)
+  //  - even n: (A->B, A->C, B->C)
+
   // pointer to stacks
-  Node **src = A;  // Source peg (starting position)
-  Node **dest = C; // Destination peg (target position)
-  Node **aux = B;  // Auxiliary peg (helper)
+  Stack *src = A;
+  Stack *dest = C;
+  Stack *aux = B;
 
   int totalMoves = (1 << n) - 1; // 2^n - 1
 
   for (int i = 1; i <= totalMoves; i++)
   {
-    if (n % 2 == 1) // Odd number of disks
+    // odd number of disks
+    if (n % 2 == 1)
     {
       if (i % 3 == 1)
         moveIterative(src, dest); // A <-> C
@@ -74,7 +81,7 @@ void hanoiIterative(int n, Node **A, Node **B, Node **C)
       else
         moveIterative(aux, dest); // B <-> C
     }
-    else // Even number of disks
+    else // even number of disks
     {
       if (i % 3 == 1)
         moveIterative(src, aux); // A <-> B
