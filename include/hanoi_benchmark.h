@@ -1,30 +1,29 @@
 #ifndef HANOI_BENCHMARK_H
 #define HANOI_BENCHMARK_H
-/**
- * Core benchmarking data structures and logic
- */
 
-#define MAX_DISKS 35
+// benchmarking data structures
 
-// `BenchmarkResult` represent a row in result table
+// structure to represent a row in result table
 typedef struct
 {
   int n;           // number of disk
   double time_sec; // time in seconds
-  long moves;      // number of moves
 } BenchmarkResult;
 
-// `BenchmarkData` represent all result table
+// structure to represent all result table
 typedef struct
 {
-  BenchmarkResult results[MAX_DISKS]; // table rows
-  int count;                          // number of benchmarks
-  char method[20];                    // used method(recursive/iterative)
+  BenchmarkResult *results; // table rows
+  int resultsLength;        // result table length
+  char method[20];          // used method(recursive/iterative)
 } BenchmarkData;
 
-// benchmark execution functions
+// benchmark functions
 
+// run single test
 void runSingleTest();
+
+// run multiple test
 void runBenchmarkSuite();
 
 #endif
