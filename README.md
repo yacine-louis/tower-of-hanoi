@@ -1,22 +1,56 @@
 # Tower Of Hanoi
 
-- conditions:
+program that measures how the Tower of Hanoi algorithm performs on your PC, using both the recursive and iterative versions.
+you can run the program with different numbers of disks and it will report the execution time.
 
-1. one disk can be moved at time
-2. only top disk of the stack can be moved
-3. larger disk can never be placed on top of a smaller disk(we assume that this is respected in the starting configuration)
+## Features
 
-4. implement the recursive version:
-   1.1. For different values of the number of disks n, increasing progressively, execute the program and report the execution time.
-   1.2. From what value of n does the program become unable to produce a solution?
-   1.3. Present a table of numerical results and a corresponding graph.
-   1.4. What can you conclude?
-5. implement the iterative version and repeat the same experimental study
-6. Compare your results with the theoretical results obtained in class.
-7. Compare the two iterative and recursive methods.
+- **Command-line interface**
+  - Simple menu with three options:
+  - **Single Test**, **Range Test**, or **Exit**.
+- **Single Test**
+  - choose between the recursive or iterative Tower of Hanoi algorithm.
+  - Runs the selected method once and displays the execution time.
+- **Range Test**
+  - Specify a start and end number of disks.
+  - Runs benchmarks for the whole range.
+  - Automatically opens a Raylib window showing:
+    - A table with execution times for each number of disks.
+    - A graph plotting number of disks vs. execution time.
 
-8. Write a report answering all the above questions. The report must include:
-   • A description of the experimental setup (machine characteristics, programming language, etc.).
-   • An analysis of the obtained results.
-   • A clear and well-structured presentation.
-   • A declaration specifying each group members contribution.
+## Installation
+
+you can download a working version of the program in releases page <a href="https://github.com/yacine-louis/tower-of-hanoi/releases/tag/hanoi">Here</a>
+
+## Build Project
+
+1. Download **w64devkit** from the official releases page:  
+   https://github.com/skeeto/w64devkit/releases  
+   (Choose the file named **w64devkit-x64-<version>.7z.exe**)
+
+2. Extract the contents directly into your **C:\\** drive.  
+   This will create the folder: `C:\w64devkit`
+
+3. Remove any old **MinGW** paths from your system **Environment Variables** (PATH).  
+   Look for entries like:  
+   `C:\MinGW\bin`  
+   `C:\msys64\mingw64\bin`  
+   and delete them to avoid conflicts.
+
+4. Add the following directory to your **Environment Variables** (PATH):  
+   `C:\w64devkit\bin`
+
+5. run the folowing commands
+
+```
+  # clone repo
+  git clone https://github.com/yacine-louis/tower-of-hanoi
+
+  cd tower-of-hanoi
+
+  # compile application
+  gcc src/*.c -o main.exe -I include -L lib -lraylib -lopengl32 -lgdi32 -lwinmm
+
+  # run executable
+  ./main.exe
+```
