@@ -67,28 +67,23 @@ void hanoiIterative(int n, Stack *A, Stack *B, Stack *C)
   Stack *dest = C;
   Stack *aux = B;
 
-  int totalMoves = (1 << n) - 1; // 2^n - 1
+  // swap aux and dest for even n
+  if (n % 2 == 0)
+  {
+    Stack *tmp = dest;
+    dest = aux;
+    aux = tmp;
+  }
+
+  int totalMoves = (1 << n) - 1;
 
   for (int i = 1; i <= totalMoves; i++)
   {
-    // odd number of disks
-    if (n % 2 == 1)
-    {
-      if (i % 3 == 1)
-        moveIterative(src, dest); // A <-> C
-      else if (i % 3 == 2)
-        moveIterative(src, aux); // A <-> B
-      else
-        moveIterative(aux, dest); // B <-> C
-    }
-    else // even number of disks
-    {
-      if (i % 3 == 1)
-        moveIterative(src, aux); // A <-> B
-      else if (i % 3 == 2)
-        moveIterative(src, dest); // A <-> C
-      else
-        moveIterative(aux, dest); // B <-> C
-    }
+    if (i % 3 == 1)
+      moveIterative(src, dest);
+    else if (i % 3 == 2)
+      moveIterative(src, aux);
+    else
+      moveIterative(aux, dest);
   }
 }
