@@ -126,10 +126,10 @@ int drawTable(BenchmarkData *data, Rectangle area, Font regularFont, Font boldFo
     sprintf(diskStr, "%d", data->results[i].n);
 
     // format time
-    if (data->results[i].time_sec < 0.001)
-      sprintf(timeStr, "< 0.001");
+    if (data->results[i].time_sec < 0.00001)
+      sprintf(timeStr, "< 0.00001");
     else
-      sprintf(timeStr, "%.4f", data->results[i].time_sec);
+      sprintf(timeStr, "%.5f", data->results[i].time_sec);
 
     // set color for row
     Color rowColor = (i % 2 == 0) ? (Color){255, 255, 255, 255} : (Color){240, 240, 240, 255};
@@ -207,8 +207,8 @@ void drawGraph(BenchmarkData *data, Rectangle area, Font regularFont, Font boldF
       maxN = data->results[i].n;
   }
 
-  if (maxTime < 0.001)
-    maxTime = 0.001;
+  if (maxTime < 0.00001)
+    maxTime = 0.00001;
 
   // draw graph lines and the time in y-axis
   int numYGridLines = 5;

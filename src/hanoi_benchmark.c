@@ -101,7 +101,7 @@ void runSingleTest()
   printf("\n--- Results ---\n");
   printf("Number of disks: %d\n", n);
   printf("Method: %s\n", method == 1 ? "Recursive" : "Iterative");
-  printf("Execution time: %.4f (sec)", getElapsedTime(&t));
+  printf("Execution time: %.5f (sec)", getElapsedTime(&t));
 
   printf("\nPress Enter to continue...");
   getchar();
@@ -227,7 +227,7 @@ void runBenchmarkSuite()
     data.results[index].n = n;
     data.results[index].time_sec = elapsed;
 
-    printf("%-8d %-15.4f\n", n, elapsed);
+    printf("%-8d %-15.5f\n", n, elapsed);
 
     // free memory
     freeStack(A);
