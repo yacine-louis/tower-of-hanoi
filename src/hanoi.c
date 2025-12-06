@@ -75,15 +75,27 @@ void hanoiIterative(int n, Stack *A, Stack *B, Stack *C)
     aux = tmp;
   }
 
-  int totalMoves = (1 << n) - 1;
+  // 2^n - 1
+  long long totalMoves = (1LL << n) - 1;
+  long long moveCount = 0;
 
-  for (int i = 1; i <= totalMoves; i++)
+  while (moveCount < totalMoves)
   {
-    if (i % 3 == 1)
-      moveIterative(src, dest);
-    else if (i % 3 == 2)
-      moveIterative(src, aux);
-    else
-      moveIterative(aux, dest);
+
+    // step 1
+    moveIterative(src, dest);
+    moveCount++;
+    if (moveCount >= totalMoves)
+      break;
+
+    // step 2
+    moveIterative(src, aux);
+    moveCount++;
+    if (moveCount >= totalMoves)
+      break;
+
+    // step 3
+    moveIterative(aux, dest);
+    moveCount++;
   }
 }
