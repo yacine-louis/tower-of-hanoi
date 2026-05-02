@@ -35,7 +35,7 @@ you can download a working version of the program in releases page <a href="http
    Look for entries like:  
    `C:\MinGW\bin`  
    `C:\msys64\mingw64\bin`  
-   and delete them to avoid conflicts
+   and delete them to avoid conflicts.
 
 5. Add the following directory to your **Environment Variables** (PATH):  
    `C:\w64devkit\bin`
