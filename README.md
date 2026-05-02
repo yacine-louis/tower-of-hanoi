@@ -42,7 +42,7 @@ you can download a working version of the program in releases page <a href="http
 
 6. run the folowing commands
 
-```
+```bash
   # clone repo
   git clone https://github.com/yacine-louis/tower-of-hanoi
 
