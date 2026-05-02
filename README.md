@@ -1,6 +1,6 @@
 # Tower Of Hanoi
 
-program that measures how the Tower of Hanoi algorithm performs on your PC, using both the recursive and iterative versions.
+Program that measures how the Tower of Hanoi algorithm performs on your PC, using both the recursive and iterative versions.
 you can run the program with different numbers of disks and it will report the execution time.
 
 ## Features
