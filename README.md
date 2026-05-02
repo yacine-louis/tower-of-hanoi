@@ -35,12 +35,12 @@ you can download a working version of the program in releases page <a href="http
    Look for entries like:  
    `C:\MinGW\bin`  
    `C:\msys64\mingw64\bin`  
-   and delete them to avoid conflicts.
+   and delete them to avoid conflicts
 
-4. Add the following directory to your **Environment Variables** (PATH):  
+5. Add the following directory to your **Environment Variables** (PATH):  
    `C:\w64devkit\bin`
 
-5. run the folowing commands
+6. run the folowing commands
 
 ```
   # clone repo
